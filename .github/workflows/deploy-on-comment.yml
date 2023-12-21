@@ -1,0 +1,21 @@
+name: Deploy to test server on comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  deploy:
+    uses: Nekasoft-team/workflows/.github/workflows/deploy-ssh.yml@main
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/deploy') }}
+    with:
+      server_username: ${{ vars.TEST_SERVER_USERNAME }}
+      server_host: ${{ vars.TEST_SERVER_HOST }}
+      server_project_path: ${{ vars.TEST_SERVER_PROJECT_PATH }}
+      node_env: test
+    secrets:
+      SERVER_SSH_PRIVATE_KEY: ${{ secrets.TEST_SERVER_SSH_PRIVATE_KEY }}
+      ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
+      environment_variables_command: >
+        VERBOSE=${{ vars.VERBOSE }}
+        PORT=${{ vars.PORT }}

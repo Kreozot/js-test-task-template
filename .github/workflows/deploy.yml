@@ -1,0 +1,20 @@
+name: Deploy main branch to production server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    uses: Nekasoft-team/workflows/.github/workflows/deploy-ssh.yml@main
+    with:
+      server_username: ${{ vars.SERVER_USERNAME }}
+      server_host: ${{ vars.SERVER_HOST }}
+      server_project_path: ${{ vars.SERVER_PROJECT_PATH }}
+    secrets:
+      SERVER_SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+      ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
+      environment_variables_command: >
+        VERBOSE=${{ vars.VERBOSE }}
+        PORT=${{ vars.PORT }}
